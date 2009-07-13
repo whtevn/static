@@ -1,0 +1,14 @@
+<h3>I AM HEADER</h3>
+<p>and we should all think about that for a second.</p>
+<h3>I AM HEADER</h3>
+<p>and we should all think about that for a second.</p>
+<!--%% print(:outside, :partial, :) -->
+<h3>I AM HEADER</h3>
+<p>and we should all think about that for a second.</p>
+<h3>I AM HEADER</h3>
+<p>and we should all think about that for a second.</p>
+<!--%% print(:outside, :partial, :) -->
+<!--%% print(:main, :section, :) -->
+<h3>I AM FOOTER</h3>
+
+

@@ -1,0 +1,83 @@
+a plan of action:
+
+1. process a marked html page into a content, structure, and layout file
+
+a. define methods of describing content and structure
+  
+  content and structure should be called out using "metamarkup" inside html comments.
+
+  html comments should be disturbed by this as little as possible.
+
+  deliniating content and structure should be easy, readable, and similar to one another
+
+#### TEMPORARY SYNTAX ####
+
+  <!--%% use_as(:main, :section) -->
+  <!-- end main section %%-->
+
+  <!--%% use_as(main, :section) %%-->
+
+  <!--%% use_as(:main, :section) -->
+  <!--%%-->
+
+
+  first argument: name
+  second argument: type (section, partial, content)
+  third argument: splat of whatever the second argument requires. e.g. partial may need a path
+
+  comments must be on their own lines, as the entirety of the comment lines containing %% until the
+  next %% in an html comment (including on this line) will be entirely removed and replaced with a
+  print statement in one file and made into another file or entry in a file somewhere else.
+
+
+  use_as vs. use
+
+  when generating the parts of multiple blueprint, sometimes partials may
+  be duplicated. In order to accomodate a single partial being used as the
+  master, "use" will _not_ print the contents into another file and will
+  instead only issue a "print" statement and will assume that the appropriate
+  partial will have been created by something else by the time static
+  generation occurs.
+  
+
+##########################
+
+b. define process for separating layout, content, and structure
+
+  1. remove partials
+    a. print in a "partials" file in an appropriate place
+    b. replace with some sort of "print" statement
+    c. recursively run the blueprint processing on the created partial
+  2. remove sections
+    a. print in "structure" file in an appropriate place
+    b. replace with "print" statement
+    c. recursively run blueprint processing on created section
+  3. remove content
+    a. print in "content" file in an appropriate place
+    b. replace with "print" statement
+  4. print remainder as layout
+
+
+      --- or ---
+
+  1. find first "use_as" statment
+  2. remove until corresponding "end" statment, replace with print, and print contents somewhere else
+  3. repeat
+
+
+
+
+
+
+
+
+
+
+
+2. process a content, structure, and layout file into an html page
+
+3. walk a site map / blueprint files and generate a project structure
+
+4. walk a site map / layout,structure,content files and generate a static site
+
+5. process a marked html page with feed instructions

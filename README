@@ -1,0 +1,40 @@
+the goal of static is to generate static html sites as quickly and easily
+as possible while maintaining a separation between content, structure, and layout.
+
+static should also accomodate feeds.
+
+the site map
+------------
+each page is described on a site map tree
+
+the feed list
+-------------
+each feed is named in a list of feeds
+
+the blueprint
+-------------
+the base for content and structure on a site. blank by default.
+
+the layout
+----------
+top level html wrapper for content and structure. similar to a "layout" in rails.
+
+the content
+-----------
+a series of yaml files that hold the content for pages in a hash 
+
+the structure
+------------
+html files with special comments to put content in place
+
+
+steps to create a site with static
+----------------------------------
+
+1. create an html page as a "layout"
+2. mark sections in the page as content and partials with comments
+3. create a site map
+4. generate content / structure files
+5. edit content and structure per-page as required
+6. publish site
+7. upload resulting static html

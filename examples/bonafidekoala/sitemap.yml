@@ -1,0 +1,13 @@
+
+site_map:
+  - home
+  - visual
+  - code
+  - music
+  - contact
+  - resume
+feeds:
+  - blog
+  - visual
+  - code
+  - music

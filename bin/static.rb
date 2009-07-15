@@ -1,6 +1,18 @@
 require 'metamark'
 
-`rm structure/*`
+dir = ARGV[0]
+
+ENV={}
+
+ENV['project_base'] = File.dirname(dir)
+
+ENV['content']      = File.join(ENV['project_base'], "content")
+ENV['structure']    = File.join(ENV['project_base'], "structure")
+ENV['blueprints']   = File.join(ENV['project_base'], "bluprints")
+ENV['images']       = File.join(ENV['blueprints']  , "images")
+ENV['stylesheets']  = File.join(ENV['blueprints']  , "stylesheets")
+ENV['javascripts']  = File.join(ENV['blueprints']  , "javascripts")
+ENV['resources']    = File.join(ENV['blueprints']  ,  "resources")
 
 def separate_content_and_structure(layout)
   while MetaMark.blueprint_directives_remaining?(layout) 

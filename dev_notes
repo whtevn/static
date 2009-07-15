@@ -64,15 +64,28 @@ b. define process for separating layout, content, and structure
   2. remove until corresponding "end" statment, replace with print, and print contents somewhere else
   3. repeat
 
+c. print segregated file into its appropriate places
 
+  1. define project structure
+    blueprints/
+      layout_1.html
+      layout_2.html
 
-
-
-
-
-
-
-
+    content/ # [echo site map]
+      page_hame/
+       content.yml 
+       _partial_content.yml
+       sub_page/
+          content.yml
+         _partial_content.yml
+       
+    structure/ # [echo site map]
+      page_hame/
+       section_name.html
+       _partial_name.html
+       sub_page/
+          content.yml
+         _partial_content.yml
 
 2. process a content, structure, and layout file into an html page
 

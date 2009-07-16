@@ -1,3 +1,0 @@
-<!--%% print(:list, :partial, :for => "partials") -->  <p>
-<!--%% print(:list, :partial, :for => "partials") -->  <p>
-<!--%% print(:main, :content, :) -->  </p>

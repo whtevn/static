@@ -7,17 +7,26 @@ end
 module MetaMark
   class<<self
     def report_first_directive(text)
-      first = nil
-      last  = nil
+      content = ""
       directive = nil
       text.each_with_index {|line, i|
-        directive ||= gather_directive(line) if line =~ /use/ or line =~ /end/
-        first     ||= i if directive
-        last      ||= i if directive_over?(directive, line)
+        if not directive
+          directive = gather_directive(line) 
+          line = line.sub(/^.*<!--.*%%.*-->/, '')
+        end
+
+        if directive
+          directive[:content] ||= ""
+          if directive_over?(directive, line)
+            directive[:content] << line.sub(/<!--.*%%.*-->.*$/, '')
+            return directive
+          else
+            directive[:content] << line
+          end 
+        end
       }
       
       return nil if not directive
-      {:directive => directive, :range => (first..last)}
     end
 
     def gather_directive(line)
@@ -34,31 +43,8 @@ module MetaMark
       return nil unless directive and end_directive
 
       if end_directive[:command] == "end"
-        directive.reject {|k, v| k==:command} == end_directive.reject{|k,v| k==:command}
+        directive.reject {|k, v| k==:command || k==:content} == end_directive.reject{|k,v| k==:command || k==:content}
       end
-    end
-
-    def insert_text(text, range, insert)
-      remove_chunk(text,range) do |body|
-        body + insert
-      end
-    end
-
-    def remove_chunk(text, range, &blk)
-      result = ""
-      text.each_with_index { |l, i|
-        result << l unless range.include?(i) 
-        result << yield(result) if blk and i == range.last
-      }
-      return result
-    end
-
-    def print_chunk(text, range)
-      result = ""
-      text.each_with_index { |l, i|
-        result << l if range.include?(i) 
-      }
-      return result
     end
 
     def blueprint_directives_remaining?(text)

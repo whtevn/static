@@ -1,0 +1,8 @@
+
+<div>this is some honkey business!</div>
+<p>
+  <!--%% use_as(:main, :content, :for => "partials") -->
+  this is some major honkey business....
+  <!--%% end(:main, :content, :for => "partials") -->
+</p>
+

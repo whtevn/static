@@ -1,4 +1,5 @@
 require 'metamark'
+require 'directive'
 
 dir = "frank" #ARGV[0]
 
@@ -17,23 +18,16 @@ ENV['javascripts']  = File.join(ENV['blueprints']  , "javascripts")
 ENV['resources']    = File.join(ENV['blueprints']  ,  "resources")
 
 def separate_content_and_structure(layout)
-
-  while MetaMark.blueprint_directives_remaining?(layout) 
+  while MetaMark.directives_remaining?(layout, :use_as, :use) 
     if directive = MetaMark.report_first_directive(layout)
-      separate_content_and_structure(directive[:content])
+      separate_content_and_structure(directive.content)
     end
-    layout = run_directive(directive, layout) 
-    File.open("structure/#{directive[:name]}_#{directive[:type]}", 'w') {|f| f.write(layout) } if directive
+    if directive
+      layout = directive.content
+      File.open("structure/#{directive.name}_#{directive.type}", 'w') {|f| f.write(layout) } 
+    end
   end
-end
-
-def run_directive(instruction, layout)
-  if instruction
-    text_directive = MetaMark.write_directive(instruction.merge({:command => "print"}))
-    puts layout
-    puts "################"
-    layout.sub!(instruction[:content], text_directive)
-  end
+  return layout
 end
 
 file = File.new("blueprint.html", "r")

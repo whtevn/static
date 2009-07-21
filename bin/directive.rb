@@ -1,39 +1,31 @@
 module MetaMark
   class Directive
-    attr_accessor :command, :name, :type, :content, :args, :open, :close
+    attr_accessor :command, :name, :type, :definition, :args, :open, :close
 
-    def initialize(args={})
-      @args    = args[:args]
-      @name    = args[:name]
-      @type    = args[:type]
-      @open    = args[:open]
-      @close   = args[:close]
-      @command = args[:command]
-      @content = args[:content]
+    def self.create(definition)
+        command    = definition.split("(")
+        definition = {:command => command[0].metamark_clean, :definition => definition}
+        command    = command[1].split(",").collect {|a| a = a.metamark_clean }
+        Directive.new({:name => command[0],
+                       :type =>command[1],
+                       :args =>command[2]}.merge(definition)
     end
 
-    def self.print(directive)
-      directive.print
+    def initialize(args={})
+      @args       = args[:args]
+      @name       = args[:name]
+      @type       = args[:type]
+      @command    = args[:command]
+      @definition = args[:definition]
     end
 
     def arg_string
       "#{self.name}, :#{self.type}#{", :#{self.args}" if self.args}"
     end
 
-    def print
-      tag = "<!--%% #{self.command}(#{self.arg_string}) -->" 
-      if self.content
-        tag += self.content 
-        tag += "<!--%% end(#{self.arg_string}) -->"
-      end
-      return tag
+    def print(as_end=false)
+      "<!--%% #{self.command}(#{self.arg_string}) #{"%%" if as_end}-->" 
     end
 
-    def end_match?(directive)
-      directive.command == "end"  and
-      directive.name == self.name and
-      directive.type == self.type and
-      directive.args == self.args 
-    end
   end
 end

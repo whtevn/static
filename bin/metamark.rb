@@ -17,7 +17,7 @@ module MetaMark
           end
         end
 
-        if directive
+        if directive and not directive.closed?
           directive.content ||= ""
           if directive_over?(directive, line)
             directive.close = line.match(/<!--.*%%.*-->/).to_s
@@ -33,12 +33,7 @@ module MetaMark
     end
 
     def gather_directive(line)
-      if line =~ /<!--.*%%.*-->/
-        command = line.split("(")
-        val = {:command => command[0].metamark_clean}
-        command = command[1].split(",").collect {|a| a = a.metamark_clean }
-        Directive.new({:name => command[0], :type =>command[1], :args =>command[2]}.merge(val))
-      end
+      Directive.create(line) if line =~ /<!--.*%%.*-->/
     end
 
     def directive_over?(directive, line)

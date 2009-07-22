@@ -1,36 +1,39 @@
-require 'metamark'
-require 'directive'
+require 'lib/metamark'
+require 'lib/directive'
+require 'lib/directive_set'
 
-dir = "frank" #ARGV[0]
+include MetaMark
 
-`rm structure/*`
+dir = File.join(File.basename(__FILE__), "..", "example")#ARGV[0]
 
-ENV={}
+ENV['project_base'] = File.expand_path(dir)
 
-ENV['project_base'] = File.dirname(dir)
+ENV['layout']       = File.join(ENV['project_base'], "layout")
 
 ENV['content']      = File.join(ENV['project_base'], "content")
 ENV['structure']    = File.join(ENV['project_base'], "structure")
-ENV['blueprints']   = File.join(ENV['project_base'], "bluprints")
-ENV['images']       = File.join(ENV['blueprints']  , "images")
-ENV['stylesheets']  = File.join(ENV['blueprints']  , "stylesheets")
-ENV['javascripts']  = File.join(ENV['blueprints']  , "javascripts")
-ENV['resources']    = File.join(ENV['blueprints']  ,  "resources")
 
-def separate_content_and_structure(layout)
-  while MetaMark.directives_remaining?(layout, :use_as, :use) 
-    if directive = MetaMark.report_first_directive(layout)
-      separate_content_and_structure(directive.content)
-    end
-    if directive
-      layout = directive.content
-      File.open("structure/#{directive.name}_#{directive.type}", 'w') {|f| f.write(layout) } 
-    end
+ENV['images']       = File.join(ENV['layout'], "images")
+ENV['stylesheets']  = File.join(ENV['layout'], "stylesheets")
+ENV['javascripts']  = File.join(ENV['layout'], "javascripts")
+ENV['resources']    = File.join(ENV['layout'],  "resources")
+
+class String
+  def metamark_clean
+    self.sub(":", '').sub(")", '').sub("-->",'').gsub("%",'').sub("<!--", '').gsub(",","").strip
   end
-  return layout
 end
 
-file = File.new("blueprint.html", "r")
-layout = ""
-file.each {|l| layout << l}
-separate_content_and_structure(layout)
+def run_layouts_under(dir)
+  Dir.new(dir).each { |f|
+    if File.directory?(f)
+      run_layouts_under(f)
+    else
+      File.open(File.join(dir, f)){|file|
+        DirectiveSet.extract_from(file)
+      }
+    end unless f.to_str =~ /^\./
+  }
+end
+
+run_layouts_under(ENV['layout'])

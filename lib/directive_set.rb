@@ -38,7 +38,7 @@ module MetaMark
     def store_directive
       directives <<  active_directive
 
-      child      =   DirectiveSet.extract_from(active_directive.content) 
+      child      =   DirectiveSet.extract_from(active_directive.contents) 
       children   <<  child if child 
 
       @active_directive = Directive.new

@@ -25,6 +25,6 @@ class String
 end
 
 File.open(File.join(ENV['layout'], 'base.html')){|file|
-  puts DirectiveSet.extract_from(file).inspect
+ DirectiveSet.extract_from(file).inspect
 }
 

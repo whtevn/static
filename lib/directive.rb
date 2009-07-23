@@ -7,13 +7,13 @@ module MetaMark
     end
 
     def self.begining?(line)
-      line = Command.new(line)
-      line and line.command != "end"
+      test = Command.delimit(line)
+      test and test.command != "end"
     end
 
     def self.ending?(line)
-      line = Command.new(line)
-      line and line.command == "end"
+      test = Command.delimit(line)
+      test and test.command == "end"
     end
 
     def open_with(line)

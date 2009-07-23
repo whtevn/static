@@ -1,4 +1,4 @@
-require 'lib/metamark'
+require 'lib/command'
 require 'lib/directive'
 require 'lib/directive_set'
 

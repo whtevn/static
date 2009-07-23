@@ -3,6 +3,7 @@ module MetaMark
     attr_accessor :command, :name, :type, :definition, :args
 
     def self.delimit(definition)
+      return nil unless definition =~ /<!--.*%%.*-->/
       command    = definition.split("(")
       definition = {:command => command[0].metamark_clean, :definition => definition}
       command    = command[1].split(",").collect {|a| a = a.metamark_clean }

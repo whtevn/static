@@ -1,21 +1,28 @@
 module MetaMark
   class Directive
-    attr_accessor :open, :content, :close
+    attr_accessor :open, :contents, :close
 
-    def self.begins_on?(line)
-      line =~ /<!--.*%%.*-->/ and not line =~ /end(.*)/
+    def initialize
+      @contents=""
     end
 
-    def self.ends_on?(line)
-      line =~ /<!--.*%%.*%%.*-->/ or line =~ /<!--.*%%.*-->/ and line =~ /end(.*)/
+    def self.begining?(line)
+      line = Command.new(line)
+      line and line.command != "end"
+    end
+
+    def self.ending?(line)
+      line = Command.new(line)
+      line and line.command == "end"
     end
 
     def open_with(line)
-      open = Command.delimit(line)
+      self.open = Command.delimit(line)
     end
 
-    def end_with(line)
-      close = Command.delimit(line)
+    def close_with(line)
+      test = Command.delimit(line)
+      self.close = test if self.end_match?(test)
     end
 
     def open?
@@ -23,7 +30,9 @@ module MetaMark
     end
 
     def closed?
-      open.definition =~ /<!--.*%%.*%%.*-->/ or (close.kind_of?(Command) and end_match?)
+      open and 
+      open.definition =~ /<!--.*%%.*%%.*-->/ or
+      (close and close.kind_of?(Command) and end_match?)
     end
 
     def end_match?(directive=nil)

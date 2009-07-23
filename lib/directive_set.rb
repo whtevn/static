@@ -18,13 +18,13 @@ module MetaMark
         ds.store_directive if directive.closed?  
 
         if directive.open?
-          if Directive.ends_on?(line) 
-            directive.end_with(line) 
+          if Directive.ending?(line) 
+            directive.close_with(line) 
           else
             directive.contents << line
           end
         else
-          directive.open_with(line) if Directive.begins_on?(line)
+          directive.open_with(line) if Directive.begining?(line)
         end
       end
 

@@ -22,7 +22,7 @@ module MetaMark
 
     def close_with(line)
       test = Command.delimit(line)
-      self.close = test if self.end_match?(test)
+      self.close = test if test and self.end_match?(test)
     end
 
     def open?

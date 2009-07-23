@@ -1,49 +1,48 @@
 module MetaMark
   class DirectiveSet
-    attr_accessor :open, :content, :close, :layout
+    attr_accessor :layout, :children, :directives
 
-    def self.start(definition=nil)
-      return nil unless definition
-      DirectiveSet.new(:open => definition.kind_of?(Directive) ?
-                                  definition :
-                                  Directive.create(definition))
+    def initialize(layout)
+      @directives = []
+      @children   = []
+      @layout     = layout
+
+      @active_directive = Directive.new
     end
 
-    def initialize(args={})
-      @open = args[:open]
-    end
+    def active_directive; @active_directive end
 
     def self.extract_from(layout)
-      puts "here"
-      while MetaMark.directives_remaining?(layout, :use_as, :use) 
-      puts "further"
-        if directive = MetaMark.report_first_directive(layout)
-      puts "holy scheikeis"
-          self.extract_from(directive.content)
-        end
-        if directive
-          layout = directive.content
-          File.open("structure/#{directive.open.name}_#{directive.open.type}", 'w') {|f| f.write(layout) } 
+      ds = DirectiveSet.new(layout)
+      ds.layout.each do |line|
+        directive = ds.active_directive
+        if directive.open?
+          if Directive.ends_on?(line) 
+            directive.end_with(line) 
+            ds.store_directive
+          else
+            directive.contents << line
+          end
+        else
+          directive.open_with(line) if Directive.begins_on?(line)
+          ds.store_directive if directive.closed?
         end
       end
-      return layout
+
+      return ds if ds.has_directives?
     end
 
-    def print
-      tag = open.print(self.has_content?)
-      if self.content
-        tag += self.content 
-        tag += close.print
-      end
-      return tag
+    def has_directives?
+      not directives.empty?
     end
 
-    def started?
-      open and open.kind_of?(Directive)
-    end
+    def store_directive(directive=nil)
+      directive  ||= active_directive
 
-    def closed?
-      open.definition =~ /^.*<!--.*%%.*%%.*-->/ or (close.kind_of?(Directive) and end_match?)
+      directives <<  directive
+
+      child      =   DirectiveSet.extract_from(directive.content) 
+      children   <<  child if child 
     end
 
     def end_match?(directive=nil)

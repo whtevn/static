@@ -1,32 +1,37 @@
 module MetaMark
   class Directive
-    attr_accessor :command, :name, :type, :definition, :args, :open, :close, :children
+    attr_accessor :open, :content, :close
 
-    def self.create(definition)
-        command    = definition.split("(")
-        definition = {:command => command[0].metamark_clean, :definition => definition}
-        command    = command[1].split(",").collect {|a| a = a.metamark_clean }
-        Directive.new({:name => command[0],
-                       :type =>command[1],
-                       :args =>command[2]}.merge(definition))
+    def self.begins_on?(line)
+      line =~ /<!--.*%%.*-->/ and not line =~ /end(.*)/
     end
 
-    def initialize(args={})
-      @args       = args[:args]
-      @name       = args[:name]
-      @type       = args[:type]
-      @command    = args[:command]
-      @definition = args[:definition]
-      @children   = []
+    def self.ends_on?(line)
+      line =~ /<!--.*%%.*%%.*-->/ or line =~ /<!--.*%%.*-->/ and line =~ /end(.*)/
     end
 
-    def arg_string
-      "#{self.name}, :#{self.type}#{", :#{self.args}" if self.args}"
+    def open_with(line)
+      open = Command.delimit(line)
     end
 
-    def print(as_end=false)
-      "<!--%% #{self.command}(#{self.arg_string}) #{"%%" if as_end}-->" 
+    def end_with(line)
+      close = Command.delimit(line)
     end
 
+    def open?
+      open and open.kind_of?(Command) and open.command != "end"
+    end
+
+    def closed?
+      open.definition =~ /<!--.*%%.*%%.*-->/ or (close.kind_of?(Command) and end_match?)
+    end
+
+    def end_match?(directive=nil)
+      directive ||= close
+      directive.command == "end"  and
+      directive.name == open.name and
+      directive.type == open.type and
+      directive.args == open.args 
+    end
   end
 end

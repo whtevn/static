@@ -6,26 +6,25 @@ module MetaMark
       @directives = []
       @children   = []
       @layout     = layout
-
-      @active_directive = Directive.new
     end
 
-    def active_directive; @active_directive end
+    def active_directive; @active_directive||=Directive.new end
 
     def self.extract_from(layout)
       ds = DirectiveSet.new(layout)
       ds.layout.each do |line|
         directive = ds.active_directive
+
+        ds.store_directive if directive.closed?  
+
         if directive.open?
           if Directive.ends_on?(line) 
             directive.end_with(line) 
-            ds.store_directive
           else
             directive.contents << line
           end
         else
           directive.open_with(line) if Directive.begins_on?(line)
-          ds.store_directive if directive.closed?
         end
       end
 
@@ -36,21 +35,13 @@ module MetaMark
       not directives.empty?
     end
 
-    def store_directive(directive=nil)
-      directive  ||= active_directive
+    def store_directive
+      directives <<  active_directive
 
-      directives <<  directive
-
-      child      =   DirectiveSet.extract_from(directive.content) 
+      child      =   DirectiveSet.extract_from(active_directive.content) 
       children   <<  child if child 
-    end
 
-    def end_match?(directive=nil)
-      directive ||= close
-      directive.command == "end"  and
-      directive.name == open.name and
-      directive.type == open.type and
-      directive.args == open.args 
+      @active_directive = Directive.new
     end
   end
 end

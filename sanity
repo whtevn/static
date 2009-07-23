@@ -1,0 +1,44 @@
+
+<html>
+  <head> <title>sanity</title> </head>
+  <body>
+    <h1>header</h1>
+    
+    <!--%% use_as(:main, :section) -->
+    <div id="main">
+      <p>
+        <!--%% use_as(:main, :content) -->
+        this is what life is all about.
+        <!--%% end(:main, :content) -->
+      </p>
+    </div>
+    <!--%% end(:main, :section) -->
+
+    <!--%% use_as(:bottom, :partial) -->
+      <div id="bottom">
+      </div>
+    <!--%% end(:bottom, :partial) -->
+
+  </body>
+</html>
+
+
+Q. How is this document going to be processed?
+
+A. Most importantly, it will be processed alongside a site map.
+   Because all of the pages in the site map will be generated via
+   the base layout, I believe the best way to proceed is to load
+   the base layout into a set of directives to be performed for
+   each page given.
+
+Q. What needs to be done with it?
+
+A. It needs to be made into a "directive set".
+
+   A DirectiveSet object consists of a "layout", which is a full-text
+   copy of what it was given to work with, and "siblings", which is a 
+   list of the "top-level" directives contained within the layout.
+
+   It should also have the capability to produce a "result", which is
+   the layout once its top-level directives have been executed.
+

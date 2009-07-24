@@ -18,13 +18,13 @@ module MetaMark
         ds.store_directive if directive.closed?  
 
         if directive.open?
-          directive.contents << line
-          directive.close_with(line) 
+          directive.contents << directive.attempt_close_with(line) 
         else
-          directive.open_with(line) if Directive.begining?(line)
+          line = directive.attempt_open_with(line) 
+          directive.contents << line if directive.open?
         end
       end
-      return ds if ds.has_directives?
+      return ds 
     end
 
     def has_directives?
@@ -34,7 +34,7 @@ module MetaMark
     def store_directive
       directives <<  active_directive
 
-      child      =   DirectiveSet.extract_from(active_directive.contents) 
+      child      =   DirectiveSet.extract_from(active_directive.clean_contents) 
       children   <<  child if child 
 
       @active_directive = Directive.new

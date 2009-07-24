@@ -6,7 +6,7 @@ module MetaMark
       @contents=""
     end
 
-    def self.begining?(line)
+    def self.beginning?(line)
       test = Command.delimit(line)
       test and test.command != "end"
     end
@@ -16,13 +16,24 @@ module MetaMark
       test and test.command == "end"
     end
 
-    def open_with(line)
-      self.open = Command.delimit(line)
+    def attempt_open_with(line)
+      if Directive.beginning?(line)
+        self.open = Command.delimit(line)
+        line = line.sub(/.*<!--/, '<!--')
+      end
+      line ||= ""
     end
 
-    def close_with(line)
-      test = Command.delimit(line)
-      self.close = test if test and self.end_match?(test)
+    def attempt_close_with(line)
+      if Directive.ending?(line) 
+        self.close = Command.delimit(line)
+        line = line.sub(/-->.*/, '-->')
+      end
+      line ||= ""
+    end
+
+    def clean_contents
+      contents.sub(/<!--.*(.*).*-->/, '').reverse.sub(/>--.*dne.*--!</, '').reverse
     end
 
     def open?

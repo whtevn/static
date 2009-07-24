@@ -13,9 +13,9 @@ module MetaMark
     def self.extract_from(layout)
       ds = DirectiveSet.new(layout)
       ds.layout.each do |line|
-        directive = ds.active_directive
+        ds.store_directive if ds.active_directive.closed?  
 
-        ds.store_directive if directive.closed?  
+        directive = ds.active_directive
 
         if directive.open?
           directive.contents << directive.attempt_close_with(line) 
@@ -38,6 +38,16 @@ module MetaMark
       children   <<  child if child 
 
       @active_directive = Directive.new
+    end
+
+    def print_children
+      children.each {|child|
+        child.print_children
+      }
+      directives.each {|directive|
+        puts directive.clean_contents
+        puts "######\n"
+      }
     end
   end
 end

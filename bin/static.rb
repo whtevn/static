@@ -24,7 +24,10 @@ class String
   end
 end
 
+set = nil
 File.open(File.join(ENV['layout'], 'base.html')){|file|
- DirectiveSet.extract_from(file)
+  set =DirectiveSet.extract_from(file)
 }
+
+set.print_children
 

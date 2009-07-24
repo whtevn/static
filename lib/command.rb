@@ -12,6 +12,14 @@ module MetaMark
                    :args =>command[2]}.merge(definition))
     end
 
+    def clone_as(new_command)
+      Command.new({:args => args,
+                   :definition => definition,
+                   :type => type,
+                   :name => name,
+                   :command => new_command})
+    end
+
     def initialize(args={})
       @args       = args[:args]
       @name       = args[:name]

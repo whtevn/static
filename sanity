@@ -42,3 +42,7 @@ A. It needs to be made into a "directive set".
    It should also have the capability to produce a "result", which is
    the layout once its top-level directives have been executed.
 
+Q. How are directives going to be executed?
+
+A. MetaMark.execute(layout, *directives) should print files (if neceessary)
+   and return the layout result against the directives.

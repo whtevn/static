@@ -53,5 +53,21 @@ module MetaMark
       directive.type == open.type and
       directive.args == open.args 
     end
+
+    def execute_on(layout, args={})
+      layout.sub(contents, resolve_execution(args))
+    end
+
+    def resolve_execution(args={})
+      # this method will be the one to execute the meat of directives
+      # coming from html documents. 
+
+      # a directive should do any file printing, copying, etc, first
+      # and then it should return a string that is a resulting tag
+
+      # right now, I am just going to print out a print tag and be done with it.
+      open.clone_as("print").print(:as_end)
+
+    end
   end
 end

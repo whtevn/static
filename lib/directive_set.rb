@@ -40,14 +40,14 @@ module MetaMark
       @active_directive = Directive.new
     end
 
-    def print_children
-      children.each {|child|
-        child.print_children
-      }
+    def execute(args={})
+      children.each {|child| child.execute }
+
+      result = layout
       directives.each {|directive|
-        puts directive.clean_contents
-        puts "######\n"
+        result = directive.execute_on(result, args)
       }
+      return(result)
     end
   end
 end

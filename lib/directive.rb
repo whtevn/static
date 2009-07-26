@@ -36,6 +36,10 @@ module MetaMark
       contents.sub(/<!--.*(.*).*-->/, '').reverse.sub(/>--.*dne.*--!</, '').reverse
     end
 
+    def clean_contents!
+      self.contents = self.clean_contents
+    end
+
     def open?
       open and open.kind_of?(Command) and open.command != "end"
     end
@@ -55,7 +59,7 @@ module MetaMark
     end
 
     def execute_on(layout, args={})
-      layout.sub(clean_contents, resolve_execution(args))
+      layout.sub(self.contents, resolve_execution(args))
     end
 
     def resolve_execution(args={})
@@ -66,8 +70,7 @@ module MetaMark
       # and then it should return a string that is a resulting tag
 
       # right now, I am just going to print out a print tag and be done with it.
-      open.clone_as("print").print(:as_end)
-
+      open.clone_as("print").print(:as_end) unless open.type == "layout"
     end
   end
 end

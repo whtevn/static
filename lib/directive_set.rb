@@ -1,7 +1,6 @@
 module MetaMark
   class DirectiveSet
-    attr_accessor :layout, :children, :directives
-    attr_accessor :name,   :level
+    attr_accessor :layout, :children, :directives, :name
 
     def initialize(directive)
       @directives = []
@@ -29,12 +28,13 @@ module MetaMark
       return ds 
     end
 
-    def has_directives?
+    def has_directives?;
       not directives.empty?
     end
 
     def store_directive
       directives <<  active_directive
+      active_directive.clean_contents!
 
       child      =   DirectiveSet.extract_from(active_directive) 
       children   <<  child if child 

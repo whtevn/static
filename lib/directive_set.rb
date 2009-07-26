@@ -6,6 +6,7 @@ module MetaMark
       @directives = []
       @children   = []
       @layout     = directive.contents
+      @name       = "#{directive.open.name}_#{directive.open.type}"
     end
 
     def active_directive; @active_directive||=Directive.new end
@@ -34,6 +35,7 @@ module MetaMark
 
     def store_directive
       directives <<  active_directive
+
       active_directive.clean_contents!
 
       child      =   DirectiveSet.extract_from(active_directive) 
@@ -50,7 +52,6 @@ module MetaMark
         result = directive.execute_on(result, args)
       }
 
-      puts "#########\n#{result}"
       return(result)
     end
   end

@@ -55,7 +55,7 @@ module MetaMark
     end
 
     def execute_on(layout, args={})
-      layout.sub(contents, resolve_execution(args))
+      layout.sub(clean_contents, resolve_execution(args))
     end
 
     def resolve_execution(args={})

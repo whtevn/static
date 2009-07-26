@@ -29,14 +29,19 @@ layout = ""
 file = File.open(File.join(ENV['layout'], 'base.html'), 'r')
 file.each {|l| layout << l }
 
-set = DirectiveSet.extract_from(layout)
+primary_directive = Directive.new
+primary_directive.contents = layout
+primary_directive.open = Command.new(:name => "base",
+                                     :type => "layout")
 
+DirectiveSet.extract_from(primary_directive).execute
+
+__END__
 site_info = nil
 File.open(File.join(ENV['layout'], 'base.html')){|file|
  site_info = YAML::load(file)
 }
 
-puts set.execute
 
   def gather_pages(page=nil, first_time=true, parent=nil)
     index = nil

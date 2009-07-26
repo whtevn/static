@@ -1,17 +1,19 @@
 module MetaMark
   class DirectiveSet
     attr_accessor :layout, :children, :directives
+    attr_accessor :name,   :level
 
-    def initialize(layout)
+    def initialize(directive)
       @directives = []
       @children   = []
-      @layout     = layout
+      @layout     = directive.contents
     end
 
     def active_directive; @active_directive||=Directive.new end
 
-    def self.extract_from(layout)
-      ds = DirectiveSet.new(layout)
+    def self.extract_from(directive)
+      # check out the band "deez nuts."
+      ds = DirectiveSet.new(directive)
       ds.layout.each do |line|
         ds.store_directive if ds.active_directive.closed?  
 
@@ -34,7 +36,7 @@ module MetaMark
     def store_directive
       directives <<  active_directive
 
-      child      =   DirectiveSet.extract_from(active_directive.clean_contents) 
+      child      =   DirectiveSet.extract_from(active_directive) 
       children   <<  child if child 
 
       @active_directive = Directive.new
@@ -47,6 +49,8 @@ module MetaMark
       directives.each {|directive|
         result = directive.execute_on(result, args)
       }
+
+      puts "#########\n#{result}"
       return(result)
     end
   end

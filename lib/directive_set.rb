@@ -6,15 +6,18 @@ module MetaMark
       @directives = []
       @children   = []
       @layout     = directive.contents
-      @name       = "#{directive.open.name}_#{directive.open.type}"
+      @name       = directive.title
     end
 
     def active_directive; @active_directive||=Directive.new end
 
-    def self.extract_from(directive)
-      # check out the band "deez nuts."
+    def self.extract_from(directive, layout=nil)
+      layout = (layout ?  directive.contents :
+                          directive.clean_contents)
+
       ds = DirectiveSet.new(directive)
-      ds.layout.each do |line|
+
+      layout.each do |line|
         ds.store_directive if ds.active_directive.closed?  
 
         directive = ds.active_directive
@@ -25,18 +28,14 @@ module MetaMark
           line = directive.attempt_open_with(line) 
           directive.contents << line if directive.open?
         end
-      end
-      return ds 
-    end
 
-    def has_directives?;
-      not directives.empty?
+      end
+
+      return ds 
     end
 
     def store_directive
       directives <<  active_directive
-
-      active_directive.clean_contents!
 
       child      =   DirectiveSet.extract_from(active_directive) 
       children   <<  child if child 
@@ -52,6 +51,9 @@ module MetaMark
         result = directive.execute_on(result, args)
       }
 
+      puts name
+      puts result
+      puts "########\n\n"
       return(result)
     end
   end

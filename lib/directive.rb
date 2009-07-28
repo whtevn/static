@@ -33,7 +33,7 @@ module MetaMark
     end
 
     def clean_contents
-      contents.sub(/<!--.*(.*).*-->/, '').reverse.sub(/>--.*dne.*--!</, '').reverse
+      contents.sub(/^\s*<!--.*%%.*#{open.command}(.*#{open.name}.*#{open.type}.*).*-->/i, '').sub(/^\s*<!--.*%%.*end(.*#{open.name}.*#{open.type}.*).*-->/i, '')
     end
 
     def clean_contents!
@@ -52,14 +52,18 @@ module MetaMark
 
     def end_match?(directive=nil)
       directive ||= close
-      directive.command == "end"  and
       directive.name == open.name and
       directive.type == open.type and
-      directive.args == open.args 
+      directive.args == open.args and
+      directive.command == "end"  
+    end
+
+    def title
+      "#{open.name}_#{open.type}"
     end
 
     def execute_on(layout, args={})
-      layout.sub(self.clean_contents, resolve_execution(args))
+      layout.sub(self.contents, resolve_execution(args))
     end
 
     def resolve_execution(args={})

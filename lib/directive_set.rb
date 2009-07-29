@@ -5,6 +5,7 @@ module MetaMark
     def initialize(directive)
       @directives = []
       @children   = []
+      @parent     = directive
       @layout     = directive.contents
       @name       = directive.title
     end

@@ -34,7 +34,7 @@ primary_directive.contents = layout
 primary_directive.open = Command.new(:name => "base",
                                      :type => "layout")
 
-DirectiveSet.extract_from(primary_directive, :layout).execute
+DirectiveSet.extract_from(primary_directive).execute
 
 __END__
 site_info = nil

@@ -1,10 +1,12 @@
 <h3>I AM HEADER</h3>
 <p>and we should all think about that for a second.</p>
 <!--%% use_as(:outside, :partial) -->
-<div>this is some honkey business!</div>
+<div>this is some serious business!</div>
 <p>
   <!--%% use_as(:main, :content, :for => "partials") -->
-  this is some major honkey business....
+  this content can be managed! isn't that exciting? printed
+  in a partial's content file, should be overwritten by same-named
+  partial content files located at particular page levels
   <!--%% end(:main, :content, :for => "partials") -->
 </p>
 <!--%% end(:outside, :partial) -->
@@ -19,7 +21,7 @@
   <!--%% end(:list, :partial, :for => "partials") -->
   <p>
   <!--%% use_as(:main, :content) -->
-  this is the first day of the first day of the first day of the rest of your life
+    this is the main content
   <!--%% end(:main, :content) -->
   </p>
 <!--%% end(:main, :section) -->
